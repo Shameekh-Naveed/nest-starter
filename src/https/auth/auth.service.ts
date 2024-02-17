@@ -148,8 +148,6 @@ export class AuthService {
       },
       role: [user.role, user.status],
     };
-    if (user.role === UserRole.STUDENT)
-      payload.role = [UserRole.STUDENT, user.status];
 
     return {
       accessToken: this.jwtService.sign(payload),

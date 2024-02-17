@@ -4,3 +4,9 @@ export enum Status {
   BLOCKED = 'blocked',
   INREVIEW = 'in-review',
 }
+
+export enum ProductStatus {
+  AVAILABLE = 'available',
+  OUTOFSTOCK = 'out-of-stock',
+  DISCONTINUED = 'discontinued',
+}

@@ -21,8 +21,6 @@ import { CreateEducationDto } from './dto/create-education.dto';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UserRole } from 'src/enums/user-role.enum';
 import { Status } from 'src/enums/status.enum';
-import { UniModRole } from 'src/enums/uni-mod-role.enum';
-import { Entity } from 'src/enums/entity.enum';
 import { CreateSupport } from './dto/create-support.dto';
 import { EmailService } from '../email/email.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -44,17 +42,9 @@ export class UserService {
       role,
       phoneNumber,
       profilePicture,
-      uniID,
     } = createUserDto;
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-    if (user)
-      throw new BadRequestException('User with this email already exists');
 
-    const userDetails: any = {
+    const userDetails = {
       firstName,
       lastName,
       email,
@@ -63,21 +53,6 @@ export class UserService {
       phoneNumber,
       profilePicture,
     };
-
-    if (role === UserRole.UNIMOD) userDetails.uniModDetails = { uniID };
-    else if (role === UserRole.STUDENT)
-      userDetails.studentDetails = {
-        dateOfBirth: new Date(createUserDto.dateOfBirth),
-        gender: createUserDto.gender,
-        location: createUserDto.location,
-        website: createUserDto.website,
-        languages: createUserDto.languages,
-        universityID: createUserDto.universityID,
-      };
-    else if (role === UserRole.COMPANYMOD)
-      userDetails.companyModDetails = {
-        companyID: createUserDto.companyID,
-      };
 
     const saveUser = await this.prisma.user.create({
       data: userDetails,
@@ -96,7 +71,6 @@ export class UserService {
   }
 
   async findOneWithEmail(email: string) {
-    // const user = await this.userModel.findOne({ email });
     const user = await this.prisma.user.findUnique({
       where: {
         email,

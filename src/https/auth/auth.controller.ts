@@ -53,9 +53,6 @@ export class AuthController {
         await this.uploadService.saveFile(profilePicture);
       createUserDto.profilePicture = profilePictureURL;
     }
-    const languages = createUserDto.languages.split(',');
-    console.log({ languages });
-    createUserDto.languages = languages;
     const userID = await this.userService.create(createUserDto);
     return { _id: userID };
   }

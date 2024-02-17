@@ -47,7 +47,7 @@ export class CreateUserDto {
 
   @IsEnum(UserRole)
   @IsNotEmpty()
-  role: string;
+  role: UserRole;
 
   @IsPhoneNumber()
   @IsNotEmpty()
@@ -56,40 +56,8 @@ export class CreateUserDto {
   // The above properties are common to all users (students, uniMods, superAdmins.)
 
   // The below properties are specific to Students only.
-  @ValidateIf((object, value) => object.role === UserRole.STUDENT)
-  @IsNotEmpty()
-  @IsDateString()
-  dateOfBirth?: string;
-
-  @ValidateIf((object, value) => object.role === UserRole.STUDENT)
-  @IsNotEmpty()
-  @IsEnum(['Male', 'Female', 'Other'])
-  gender?: string;
-
-  @ValidateIf((object, value) => object.role === UserRole.STUDENT)
-  @IsString()
-  @IsNotEmpty()
-  location?: string;
-
-  @IsUrl()
-  @IsOptional()
-  website?: string;
-
-  // @IsArray()
-  @IsString()
-  languages?: any;
-
-  @ValidateIf((object, value) => object.role === UserRole.STUDENT)
-  @IsString()
-  @IsNotEmpty()
-  universityID?:number;
-
-  // A uni mod can or can not have a uniID & superAdmins don't have a uniID
-  @IsString()
-  @IsOptional()
-  uniID?:number;
-
-  @IsString()
-  @IsOptional()
-  companyID?:number;
+  // @ValidateIf((object, value) => object.role === UserRole.STUDENT)
+  // @IsNotEmpty()
+  // @IsDateString()
+  // dateOfBirth?: string;
 }

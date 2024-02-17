@@ -1,6 +1,5 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,88 +9,152 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model Experience {
-//   id            Int          @id @default(autoincrement())
-//   title         String       @db.VarChar(255)
-//   location      String       @db.VarChar(255)
-//   joiningDate   DateTime
-//   endingDate    DateTime?
-//   companyName   String?      @db.VarChar(255)
-//   companyID     String?      @db.VarChar(255)
-//   StudentData   StudentData? @relation(fields: [studentDataId], references: [id])
-//   studentDataId Int?
+// enum UserRole {
+//   ADMIN
+//   USER
 // }
 
-// model Education {
-//   id            Int          @id @default(autoincrement())
-//   title         String       @db.VarChar(255)
-//   startDate     DateTime
-//   category      String       @db.VarChar(255)
-//   grade         String       @db.VarChar(255)
-//   endDate       DateTime?
-//   uniName       String?      @db.VarChar(255)
-//   uniID         String?      @db.VarChar(255)
-//   StudentData   StudentData? @relation(fields: [studentDataId], references: [id])
-//   studentDataId Int?
+// enum Status {
+//   APPROVED
+//   PENDING
+//   BLOCKED
+//   INREVIEW
 // }
 
-// model Skill {
-//   id              Int          @id @default(autoincrement())
-//   title           String       @db.VarChar(255)
-//   experienceLevel Int
-//   StudentData     StudentData? @relation(fields: [studentDataId], references: [id])
-//   studentDataId   Int?
-// }
+enum ProductStatus {
+  AVAILABLE
+  OUTOFSTOCK
+  DISCONTINUED
+}
 
-// model StudentData {
-//   id           Int          @id @default(autoincrement())
-//   dateOfBirth  DateTime
-//   gender       String       @db.VarChar(255)
-//   location     String       @db.VarChar(255)
-//   website      String?      @db.VarChar(255)
-//   createdAt    DateTime     @default(now())
-//   universityID String?      @db.VarChar(255)
-//   status       String       @db.VarChar(255)
-//   // Define relations
-//   experiences  Experience[]
-//   educations   Education[]
-//   skills       Skill[]
-//   User         User[]
-// }
-
-// model UniModData {
-//   id    Int     @id @default(autoincrement())
-//   uniID String? @db.VarChar(255)
-//   role  String  @db.VarChar(255)
-//   User  User[]
-// }
-
-// model CompanyModData {
-//   id        Int     @id @default(autoincrement())
-//   companyID String? @db.VarChar(255)
-//   role      String  @db.VarChar(255)
-//   User      User[]
-// }
+enum ProductType {
+  GEAR
+  GAME
+}
 
 model User {
+  id             Int         @id @default(autoincrement())
+  firstName      String      @db.VarChar(255)
+  lastName       String      @db.VarChar(255)
+  email          String      @unique
+  password       String      @db.VarChar(255)
+  profilePicture String?     @db.VarChar(255)
+  role           String
+  phoneNumber    String      @db.VarChar(255)
+  status         String      @default("pending")
+  createdAt      DateTime    @default(now())
+  Order          Order[]
+  Review         Review[]
+  Complaints     Complaint[]
+  Favorite       Favorite[]
+}
+
+model Products {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  description String        @db.Text
+  marketPrice Float
+  costPrice   Float
+  picture     String        @db.VarChar(255)
+  minimumAge  Int
+  inventory   Int
+  productType ProductType
+  status      ProductStatus @default(AVAILABLE)
+  Gear        Gear[]
+  Game        Game[]
+  Cart        Cart[]
+  Order       Order[]
+  Review      Review[]
+  Complaints  Complaint[]
+  Favorite    Favorite[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Stock       Stock[]
+}
+
+model Gear {
+  id        Int      @id @default(autoincrement())
+  productID Int
+  product   Products @relation(fields: [productID], references: [id])
+  size      String   @db.VarChar(255)
+  color     String   @db.VarChar(255)
+  weight    Float
+  height    Float
+  width     Float
+  length    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Game {
   id             Int      @id @default(autoincrement())
-  firstName      String   @db.VarChar(255)
-  lastName       String   @db.VarChar(255)
-  email          String   @unique
-  password       String   @db.VarChar(255)
-  profilePicture String?  @db.VarChar(255)
-  role           String   @db.VarChar(255)
-  phoneNumber    String   @db.VarChar(255)
-  status         String   @db.VarChar(255)
+  productID      Int
+  product        Products @relation(fields: [productID], references: [id])
+  minimumPlayers Int
+  duration       Int
   createdAt      DateTime @default(now())
+}
 
-  // studentDataId    Int?
-  // uniModDataId     Int?
-  // companyModDataId Int?
+model Order {
+  id        Int      @id @default(autoincrement())
+  userID    Int
+  user      User     @relation(fields: [userID], references: [id])
+  productID Int
+  product   Products @relation(fields: [productID], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Cart      Cart[]
+}
 
-  // Define relations
-  // studentDetails    StudentData?    @relation(fields: [studentDataId], references: [id])
-  // uniModDetails     UniModData?     @relation(fields: [uniModDataId], references: [id])
-  // companyModDetails CompanyModData? @relation(fields: [companyModDataId], references: [id])
-  // StudentData   StudentData? @relation(fields: [studentDataId], references: [id])
+model Cart {
+  id        Int      @id @default(autoincrement())
+  orderID   Int
+  order     Order    @relation(fields: [orderID], references: [id])
+  productID Int
+  product   Products @relation(fields: [productID], references: [id])
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userID    Int
+  user      User     @relation(fields: [userID], references: [id])
+  productID Int
+  product   Products @relation(fields: [productID], references: [id])
+  rating    Int
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Complaint {
+  id        Int      @id @default(autoincrement())
+  userID    Int
+  user      User     @relation(fields: [userID], references: [id])
+  productID Int
+  product   Products @relation(fields: [productID], references: [id])
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userID    Int
+  user      User     @relation(fields: [userID], references: [id])
+  productID Int
+  product   Products @relation(fields: [productID], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Stock {
+  id        Int      @id @default(autoincrement())
+  productID Int
+  product   Products @relation(fields: [productID], references: [id])
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
