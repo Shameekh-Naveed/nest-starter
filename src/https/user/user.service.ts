@@ -106,6 +106,19 @@ export class UserService {
     return user;
   }
 
+  async resetPassword(id: number, password: string) {
+    const user = await this.prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        password,
+      },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
   // TODO: Add a filter here
   async search(page: number, limit: number, name: string) {
     const MaxLimit = limit;
@@ -127,5 +140,4 @@ export class UserService {
     //   .skip(skip)
     //   .limit(MaxLimit);
   }
-
 }

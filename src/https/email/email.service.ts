@@ -37,4 +37,20 @@ export class EmailService {
     amount: number,
     transactionID: string,
   ) {}
+
+  async resetPassword(email: string, resetLink: string) {
+    const SUPER_MAIL = this.configService.get<string>('SUPER_MAIL');
+    const subject = 'Password Reset';
+    const text = `Dear user,\n\nYou have requested to reset your 
+    password. Please click the following link to proceed with the password 
+    reset:\n\n${resetLink}\n\nIf you did not request this reset, you can safely 
+    ignore this email.\n\nRegards,\nThe Admin Team`;
+
+    await this.transporter.sendMail({
+      from: SUPER_MAIL,
+      to: email,
+      subject,
+      text,
+    });
+  }
 }

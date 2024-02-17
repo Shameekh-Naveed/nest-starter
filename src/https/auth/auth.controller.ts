@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Query,
+  Req,
   Request,
   UploadedFile,
   UseGuards,
@@ -20,6 +21,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadsService } from '../upload-service/uploads.service';
 import { ParseFilePipeCutsom } from 'src/custom-pipes/parse-file.pipe';
 import { FilterParameterPipe } from 'src/custom-pipes/filter-parameter.pipe';
+import { JwtGuard } from './guards/jwt-auth.guard';
+import { ExtendedRequest } from 'src/interfaces/extended-request';
 
 @Controller('auth')
 export class AuthController {
@@ -28,19 +31,6 @@ export class AuthController {
     private userService: UserService,
     private uploadService: UploadsService,
   ) {}
-
-  @Get('tester')
-  post() {
-    return this.authService.createUser(
-      'shameekh',
-      'sgameekh',
-      'shameekh',
-      'shameekh',
-      'shameekh',
-      'shameekh',
-      'shameekh',
-    );
-  }
 
   @Post('login')
   async login(@Body() credentials) {
@@ -68,6 +58,21 @@ export class AuthController {
     createUserDto.languages = languages;
     const userID = await this.userService.create(createUserDto);
     return { _id: userID };
+  }
+
+  @Post('forgetPassword')
+  async forgetPassword(@Body() email: string) {
+    return this.authService.forgetPassword(email);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('resetPassword')
+  async resetPassword(
+    @Req() req: Partial<ExtendedRequest>,
+    @Body() newPassword: string,
+  ) {
+    const { email, id } = req.user.user;
+    return this.authService.resetPassword(id, newPassword);
   }
 
   @UseGuards(RefreshJwtGuard)

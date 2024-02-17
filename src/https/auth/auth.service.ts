@@ -14,6 +14,8 @@ import { CompanyPackage, UniversityPackage } from 'src/packages/package.class';
 import { StripeService } from '../stripe/stripe.service';
 import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
+import { EmailService } from '../email/email.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -21,26 +23,12 @@ export class AuthService {
     private jwtService: JwtService,
     private stripeService: StripeService,
     private prismaService: PrismaService,
+    private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
   ) {}
-
-  async createUser(
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    role: string,
-    phoneNumber: string,
-    status: string,
-  ) {
-    const user = await this.prismaService.user.create({
-      data: { firstName, lastName, email, password, role, phoneNumber, status },
-    });
-    return user;
-  }
 
   async validateUser(email: string, passwordH: string) {
     const user = await this.userService.findOneWithEmail(email);
-    if (!user) return null;
     const valid = await bcrypt.compare(passwordH, user.password);
     if (!valid) return null;
 
@@ -103,6 +91,13 @@ export class AuthService {
     return hash;
   }
 
+  async resetPassword(id: number, password: string) {
+    const hashedPassword = await this.hashPassword(password);
+    await this.userService.resetPassword(id, hashedPassword);
+    const updated = await this.updateToken(id);
+    return updated;
+  }
+
   async updateToken(userID: number) {
     const user = await this.userService.findOne(userID);
     if (!user) throw new UnauthorizedException('Invalid credentials');
@@ -122,9 +117,22 @@ export class AuthService {
       roles: [user.role, user.status],
     };
     return {
+      user,
       accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
     };
+  }
+
+  async forgetPassword(email: string) {
+    const user = await this.userService.findOneWithEmail(email);
+    const resetToken = {
+      id: user.id,
+      email: user.email,
+    };
+    const signed = this.jwtService.sign(resetToken, { expiresIn: '5m' });
+    const CLIENT_ADDRESS = this.configService.get<string>('CLIENT_ADDRESS');
+    const resetLink = `${CLIENT_ADDRESS}/reset-password?token=${signed}`;
+    await this.emailService.resetPassword(user.email, resetLink);
   }
 
   async refreshToken(user: User) {
