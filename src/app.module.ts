@@ -20,7 +20,7 @@ import { PrismaService } from './https/prisma/prisma.service';
       envFilePath: '.env.local',
     }),
 
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    // MongooseModule.forRoot(process.env.MONGO_URI),
     ScheduleModule.forRoot(),
     MulterModule.register({
       dest: './uploads2',
