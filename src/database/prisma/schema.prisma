@@ -7,8 +7,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  // url      = "mysql://s6wrwc46rrbye0y1vel2:pscale_pw_oLDOMwCgLKp5ZeKYC4dgOVtZ6BWxZ9O8SFHWHm2S0yg@aws.connect.psdb.cloud/portfolio?sslaccept=strict"
-  url      = "mysql://freedb_shameekh:mHBwZy$UQDVqT8Z@sql.freedb.tech:3306/freedb_softec"
+  url      = env("DATABASE_URL")
 }
 
 // model Experience {
