@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  // url      = "mysql://s6wrwc46rrbye0y1vel2:pscale_pw_oLDOMwCgLKp5ZeKYC4dgOVtZ6BWxZ9O8SFHWHm2S0yg@aws.connect.psdb.cloud/portfolio?sslaccept=strict"
+  url      = "mysql://freedb_shameekh:mHBwZy$UQDVqT8Z@sql.freedb.tech:3306/freedb_softec"
+}
+
+// model Experience {
+//   id            Int          @id @default(autoincrement())
+//   title         String       @db.VarChar(255)
+//   location      String       @db.VarChar(255)
+//   joiningDate   DateTime
+//   endingDate    DateTime?
+//   companyName   String?      @db.VarChar(255)
+//   companyID     String?      @db.VarChar(255)
+//   StudentData   StudentData? @relation(fields: [studentDataId], references: [id])
+//   studentDataId Int?
+// }
+
+// model Education {
+//   id            Int          @id @default(autoincrement())
+//   title         String       @db.VarChar(255)
+//   startDate     DateTime
+//   category      String       @db.VarChar(255)
+//   grade         String       @db.VarChar(255)
+//   endDate       DateTime?
+//   uniName       String?      @db.VarChar(255)
+//   uniID         String?      @db.VarChar(255)
+//   StudentData   StudentData? @relation(fields: [studentDataId], references: [id])
+//   studentDataId Int?
+// }
+
+// model Skill {
+//   id              Int          @id @default(autoincrement())
+//   title           String       @db.VarChar(255)
+//   experienceLevel Int
+//   StudentData     StudentData? @relation(fields: [studentDataId], references: [id])
+//   studentDataId   Int?
+// }
+
+// model StudentData {
+//   id           Int          @id @default(autoincrement())
+//   dateOfBirth  DateTime
+//   gender       String       @db.VarChar(255)
+//   location     String       @db.VarChar(255)
+//   website      String?      @db.VarChar(255)
+//   createdAt    DateTime     @default(now())
+//   universityID String?      @db.VarChar(255)
+//   status       String       @db.VarChar(255)
+//   // Define relations
+//   experiences  Experience[]
+//   educations   Education[]
+//   skills       Skill[]
+//   User         User[]
+// }
+
+// model UniModData {
+//   id    Int     @id @default(autoincrement())
+//   uniID String? @db.VarChar(255)
+//   role  String  @db.VarChar(255)
+//   User  User[]
+// }
+
+// model CompanyModData {
+//   id        Int     @id @default(autoincrement())
+//   companyID String? @db.VarChar(255)
+//   role      String  @db.VarChar(255)
+//   User      User[]
+// }
+
+model User {
+  id             Int      @id @default(autoincrement())
+  firstName      String   @db.VarChar(255)
+  lastName       String   @db.VarChar(255)
+  email          String   @unique
+  password       String   @db.VarChar(255)
+  profilePicture String?  @db.VarChar(255)
+  role           String   @db.VarChar(255)
+  phoneNumber    String   @db.VarChar(255)
+  status         String   @db.VarChar(255)
+  createdAt      DateTime @default(now())
+
+  // studentDataId    Int?
+  // uniModDataId     Int?
+  // companyModDataId Int?
+
+  // Define relations
+  // studentDetails    StudentData?    @relation(fields: [studentDataId], references: [id])
+  // uniModDetails     UniModData?     @relation(fields: [uniModDataId], references: [id])
+  // companyModDetails CompanyModData? @relation(fields: [companyModDataId], references: [id])
+  // StudentData   StudentData? @relation(fields: [studentDataId], references: [id])
+}
