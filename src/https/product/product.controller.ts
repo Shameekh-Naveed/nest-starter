@@ -11,7 +11,7 @@ import {
   Query,
   ParseIntPipe,
 } from '@nestjs/common';
-import { InventoryService } from './product.service';
+import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateInventoryDto } from './dto/update-product.dto';
 import { JwtGuard } from '../auth/guards/jwt-auth.guard';
@@ -22,15 +22,15 @@ import { FilterParameterPipe } from 'src/custom-pipes/filter-parameter.pipe';
 import { PaginationPipe } from 'src/custom-pipes/pagination.pipe';
 import { ProductStatus } from '@prisma/client';
 
-@Controller('inventory')
+@Controller('product')
 export class InventoryController {
-  constructor(private readonly inventoryService: InventoryService) {}
+  constructor(private readonly productService: ProductService) {}
 
   @UseGuards(JwtGuard, PermissionsGuard)
   @SetMetadata('roles', [[UserRole.ADMIN, Status.APPROVED]])
   @Post()
   async create(@Body() createInventoryDto: CreateProductDto) {
-    const product = await this.inventoryService.create(createInventoryDto);
+    const product = await this.productService.create(createInventoryDto);
     return {
       product: {
         id: product.id,
@@ -48,7 +48,7 @@ export class InventoryController {
     @Query('maxPrice', FilterParameterPipe) maxPrice: number,
     @Query('minAge', FilterParameterPipe) minAge: number,
   ) {
-    return this.inventoryService.findAll(
+    return this.productService.findAll(
       limit,
       page,
       name,
@@ -60,7 +60,7 @@ export class InventoryController {
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.inventoryService.findOne(+id);
+    return this.productService.findOne(+id);
   }
 
   // TODO: Update product
@@ -70,13 +70,13 @@ export class InventoryController {
     @Param('id') id: string,
     @Body() updateInventoryDto: UpdateInventoryDto,
   ) {
-    return this.inventoryService.update(+id, updateInventoryDto);
+    return this.productService.update(+id, updateInventoryDto);
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
   @SetMetadata('roles', [[UserRole.ADMIN, Status.APPROVED]])
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.inventoryService.remove(+id);
+    return this.productService.remove(+id);
   }
 }

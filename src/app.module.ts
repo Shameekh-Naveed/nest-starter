@@ -12,7 +12,7 @@ import { ConfigModule } from '@nestjs/config';
 import { StripeModule } from './https/stripe/stripe.module';
 import { PackagesModule } from './packages/packages.module';
 import { PrismaService } from './https/prisma/prisma.service';
-import { InventoryModule } from './https/product/product.module';
+import { ProductModule } from './https/product/product.module';
 import { OrderModule } from './https/order/order.module';
 import { CartModule } from './https/cart/cart.module';
 
@@ -33,12 +33,11 @@ import { CartModule } from './https/cart/cart.module';
     UserModule,
     StripeModule,
     PackagesModule,
-    InventoryModule,
+    ProductModule,
     OrderModule,
     CartModule,
   ],
   controllers: [AppController],
   providers: [AppService, UploadsService, PrismaService],
 })
-
 export class AppModule {}

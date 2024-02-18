@@ -5,7 +5,6 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { Interval } from 'src/enums/interval.enum';
 import { UserRole } from 'src/enums/user-role.enum';
 
 
@@ -22,10 +21,6 @@ export class CreateStripeDto {
   @IsNotEmpty()
   @IsPositive()
   unit_amount: number;
-
-  @IsEnum(Interval)
-  @IsNotEmpty()
-  interval: Interval;
 
   @IsEnum(UserRole)
   @IsNotEmpty()

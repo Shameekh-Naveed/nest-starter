@@ -163,7 +163,8 @@ export class StripeService {
   }
 
   async createPackage(stripe: CreateStripeDto) {
-    const { name, description, unit_amount, interval, role } = stripe;
+    const { name, description, unit_amount, role } = stripe;
+    const interval = 'month';
     const currency = 'usd';
     const lookup_key = this.generateLookupKey(name);
     // * Unit amount is in cents

@@ -13,10 +13,10 @@ import { UploadsService } from '../upload-service/uploads.service';
 import { ConfigService } from '@nestjs/config';
 import { StripeModule } from '../stripe/stripe.module';
 import { PrismaService } from '../prisma/prisma.service';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
-    // TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
@@ -24,11 +24,9 @@ import { PrismaService } from '../prisma/prisma.service';
       }),
       inject: [ConfigService],
     }),
-    // GroupModule,
-    // ApplicationModule,
-    // CommentModule,
     UserModule,
     StripeModule,
+    EmailModule,
   ],
   providers: [
     AuthService,

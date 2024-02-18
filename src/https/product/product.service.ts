@@ -6,7 +6,7 @@ import { ProductStatus } from '@prisma/client';
 import { CartService } from '../cart/cart.service';
 
 @Injectable()
-export class InventoryService {
+export class ProductService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly cartService: CartService,

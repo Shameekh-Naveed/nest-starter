@@ -32,7 +32,6 @@ export class StripeController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @SetMetadata('roles', [
     [UserRole.ADMIN, Status.APPROVED],
-    [UserRole.OWNER, Status.APPROVED],
   ])
   @Post('createPackage')
   create(@Body() createStripeDto: CreateStripeDto) {
@@ -42,7 +41,6 @@ export class StripeController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @SetMetadata('roles', [
     [UserRole.ADMIN, Status.APPROVED],
-    [UserRole.OWNER, Status.APPROVED],
   ])
   @Get('subscription/:userID')
   findOne(@Param('userID') userID: number) {
@@ -50,7 +48,6 @@ export class StripeController {
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @SetMetadata('roles', [[UserRole.COMPANYMOD], [UserRole.UNIMOD]])
   @Get('createSession/:priceID')
   createCheckoutSession(
     @Param('priceID') priceID: string,
@@ -71,7 +68,6 @@ export class StripeController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @SetMetadata('roles', [
     [UserRole.ADMIN, Status.APPROVED],
-    [UserRole.OWNER, Status.APPROVED],
   ])
   @Get('allProducts')
   getAllProducts() {
