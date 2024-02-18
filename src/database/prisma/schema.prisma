@@ -103,6 +103,8 @@ model Game {
 }
 
 // TODO: Add payment info to order
+// TODO: Need us some sort of tracking
+
 model Order {
   id           Int            @id @default(autoincrement())
   userID       Int

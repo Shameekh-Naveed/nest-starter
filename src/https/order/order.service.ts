@@ -64,12 +64,98 @@ export class OrderService {
     return order;
   }
 
-  findAll() {
-    return `This action returns all order`;
+  async userFindAll(userID: number) {
+    const orders = await this.prismaService.order.findMany({
+      where: {
+        userID,
+      },
+      include: {
+        OrderProduct: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+    return orders;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: number) {
+    const order = await this.prismaService.order.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        OrderProduct: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+    return order;
+  }
+
+  async findAll(
+    productName: string,
+    customerName: string,
+    date: string,
+    email: string,
+  ) {
+    // Constructing the query to find orders based on provided parameters
+    const orders = await this.prismaService.order.findMany({
+      where: {
+        // Using logical OR operator to match any of the provided parameters
+        OR: [
+          // Match product name
+          {
+            OrderProduct: {
+              some: {
+                product: {
+                  name: {
+                    contains: productName,
+                  },
+                },
+              },
+            },
+          },
+          // Match customer name
+          {
+            user: {
+              firstName: {
+                contains: customerName,
+              },
+            },
+          },
+          // Match date
+          {
+            createdAt: {
+              gte: new Date(date),
+              lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000), // Assuming date parameter is for a single day
+            },
+          },
+          // Match email
+          {
+            user: {
+              email: {
+                contains: email,
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        // Include related data such as products and users
+        OrderProduct: {
+          include: {
+            product: true,
+          },
+        },
+        user: true,
+      },
+    });
+
+    return orders;
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
