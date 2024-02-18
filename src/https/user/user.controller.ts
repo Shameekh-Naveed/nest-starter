@@ -47,12 +47,7 @@ export class UserController {
     console.log({ PORT });
   }
 
-  @SetMetadata('roles', [
-    [UserRole.STUDENT, Status.APPROVED],
-    [UserRole.UNIMOD, Status.APPROVED],
-    [UserRole.ADMIN, Status.APPROVED],
-    [UserRole.OWNER, Status.APPROVED],
-  ])
+  @SetMetadata('roles', [])
   @Get('student/:id')
   findOneStd(@Param('id') id: number) {
     return this.userService.findOne(+id);

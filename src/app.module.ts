@@ -12,6 +12,9 @@ import { ConfigModule } from '@nestjs/config';
 import { StripeModule } from './https/stripe/stripe.module';
 import { PackagesModule } from './packages/packages.module';
 import { PrismaService } from './https/prisma/prisma.service';
+import { InventoryModule } from './https/product/product.module';
+import { OrderModule } from './https/order/order.module';
+import { CartModule } from './https/cart/cart.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { PrismaService } from './https/prisma/prisma.service';
     UserModule,
     StripeModule,
     PackagesModule,
+    InventoryModule,
+    OrderModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService, UploadsService, PrismaService],
